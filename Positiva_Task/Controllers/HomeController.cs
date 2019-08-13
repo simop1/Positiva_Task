@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Positiva_Task.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,18 +14,30 @@ namespace Positiva_Task.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult UserManagement()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "User management";
 
             return View();
         }
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
+		[HttpPost]
+		public ActionResult EditOrAddUser(int UserID)
+		{
+			UserModel model = new UserModel();
+			model.UserID = UserID;
+			return PartialView("EditOrAddUser", model);
+		}
 
-            return View();
-        }
-    }
+		[HttpPost]
+		public ActionResult SaveUser(UserModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				return Json(new { success = true});
+			}
+
+			return Json(false);
+		}
+	}
 }

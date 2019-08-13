@@ -1,0 +1,119 @@
+﻿@{
+	ViewBag.Title = "User management";
+}
+
+<div class="row">
+	<h2>@ViewBag.Title</h2>
+</div>
+<br /><br />
+<div class="row">
+	<button id="btnCreateUser" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createUserModal">
+		<span>Create new user</span>
+	</button>
+</div>
+<br />
+<div class="row">
+	<table id="myTable">
+		<thead>
+			<tr>
+				<td>User name</td>
+				<td>Email</td>
+				<td>Info</td>
+				<td>Action</td>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
+
+
+<div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+		</div>
+	</div>
+</div>
+
+@*<div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="createUserModalLabel">Create new user</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" id="form-container">
+				@Html.Partial("UserCreate")
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				<button id="btnCreate" type="button" class="btn btn-primary">Create</button>
+			</div>
+		</div>
+	</div>
+</div>*@
+
+@section scripts
+{
+	<script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
+	<script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
+	<script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
+	 <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+	<script src="~/lib/jquery-validation- unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+	@Styles.Render("//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
+	@Scripts.Render("//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js")
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('#myTable').DataTable({
+
+			});
+		});
+
+		var token = $('input[name="__RequestVerificationToken"]').val();
+
+		$("#btnCreateUser").on("click", function(e) {
+			//e.preventDefault(); 
+			debugger
+			$.ajax({
+				type: "POST",
+				datatype: "json",
+				contenttype: 'application/json; charset=utf-8',
+				url: '@Url.Action("EditOrAddUser", "Home")',
+				async: true,
+				//method: form.attr("method"),
+				//data: form.serialize(),
+				data: { UserID: 0 },
+				success: function (data) {
+					$('#createUserModal .modal-content').html(data);
+					$('#createUserModal').modal('show');
+				},
+				error: function () {
+					alert("Failed adding user");
+				}
+			});
+		});
+
+	function OnSubmitSuccess(data) {
+		if (data.Error == true) {
+			$('#createUserModal').modal('show');
+			$('#user-Error span.text-danger').text(data.Message);
+			$('#user-Error').show();
+		}
+		else {
+			$('#createUserModal').modal('hide');
+			window.location.reload();
+		}
+	}
+
+	function OnSubmitFailure(data) {
+		//$("#productPriceComponentEditModalSubmitButton").attr("disabled", false);
+		//$('#productComponentModal').modal('hide');
+		alert("Failed adding user");
+	}
+
+	</script>
+}
