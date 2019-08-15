@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<Positiva_Task.Models.UserModel>
+
+@{
 	ViewBag.Title = "User management";
 }
 
@@ -12,21 +14,52 @@
 	</button>
 </div>
 <br />
+
 <div class="row">
-	<table id="myTable">
+	<table id="usersTable">
 		<thead>
 			<tr>
+				<td>First name</td>
+				<td>Last name</td>
 				<td>User name</td>
 				<td>Email</td>
-				<td>Info</td>
+				<td>Date of birth</td>
 				<td>Action</td>
 			</tr>
 		</thead>
 		<tbody>
+			@foreach (var item in Model)
+			{
+				@Html.HiddenFor(model => item.UserID)
+				<tr>
+					<td>
+						@Html.DisplayFor(model => item.FirstName)
+					</td>
+					<td>
+						@Html.DisplayFor(model => item.LastName)
+					</td>
+					<td>
+						@Html.DisplayFor(model => item.UserName)
+					</td>
+					<td>
+						@Html.DisplayFor(model => item.Email)
+					</td>
+					<td>
+						@Html.DisplayFor(model => item.DateOfBirth)
+					</td>
+					<td>
+						<a style="cursor:pointer;" id="edit_@item.UserID" onclick="EditUser(@item.UserID)">Edit</a> |
+						<a style="cursor:pointer;" id="delete_@item.UserID" onclick="DeleteUser(@item.UserID)">Delete</a> 
+
+						@*@Html.ActionLink("Edit", "EditOrAddUser", "Home", new { id = item.UserID }) |*@
+						@*@Html.ActionLink("Delete", "Delete", { id = item.UserID })*@
+					</td>
+				</tr>
+			}
+
 		</tbody>
 	</table>
 </div>
-
 
 <div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
@@ -35,32 +68,12 @@
 	</div>
 </div>
 
-@*<div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" id="createUserModalLabel">Create new user</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body" id="form-container">
-				@Html.Partial("UserCreate")
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-				<button id="btnCreate" type="button" class="btn btn-primary">Create</button>
-			</div>
-		</div>
-	</div>
-</div>*@
-
 @section scripts
 {
 	<script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
 	<script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
 	<script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
-	 <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+	<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
 	<script src="~/lib/jquery-validation- unobtrusive/jquery.validate.unobtrusive.js"></script>
 
 	@Styles.Render("//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
@@ -68,7 +81,7 @@
 
 	<script type="text/javascript">
 		$(document).ready(function () {
-			$('#myTable').DataTable({
+			$('#usersTable').DataTable({
 
 			});
 		});
@@ -76,8 +89,7 @@
 		var token = $('input[name="__RequestVerificationToken"]').val();
 
 		$("#btnCreateUser").on("click", function(e) {
-			//e.preventDefault(); 
-			debugger
+			//e.preventDefault();
 			$.ajax({
 				type: "POST",
 				datatype: "json",
@@ -86,7 +98,7 @@
 				async: true,
 				//method: form.attr("method"),
 				//data: form.serialize(),
-				data: { UserID: 0 },
+				data: { UserID: -1 },
 				success: function (data) {
 					$('#createUserModal .modal-content').html(data);
 					$('#createUserModal').modal('show');
@@ -97,10 +109,49 @@
 			});
 		});
 
+	function EditUser(userID) {
+		$.ajax({
+			type: "POST",
+			datatype: "json",
+			contenttype: 'application/json; charset=utf-8',
+			url: '@Url.Action("EditOrAddUser", "Home")',
+			async: true,
+			data: { UserID: JSON.stringify(userID) },
+			success: function (data) {
+				$('#createUserModal .modal-content').html(data);
+				$('#createUserModal').modal('show');
+			},
+			error: function () {
+				alert("Failed adding user");
+			}
+		});
+	}
+
+	function DeleteUser(userID) {
+
+		var deleteUser = confirm("Are you sure you want to delete this user?");
+		if (deleteUser == true) {
+			$.ajax({
+				type: "POST",
+				datatype: "json",
+				contenttype: 'application/json; charset=utf-8',
+				url: '@Url.Action("DeleteUser", "Home")',
+				async: true,
+				data: { UserID: JSON.stringify(userID) },
+				success: function (data) {
+					$('#createUserModal .modal-content').html(data);
+					$('#createUserModal').modal('show');
+				},
+				error: function () {
+					alert("Failed adding user");
+				}
+			});
+		}
+	}
+		
 	function OnSubmitSuccess(data) {
+		debugger
 		if (data.Error == true) {
-			$('#createUserModal').modal('show');
-			$('#user-Error span.text-danger').text(data.Message);
 			$('#user-Error').show();
 		}
 		else {
@@ -110,6 +161,7 @@
 	}
 
 	function OnSubmitFailure(data) {
+		debugger
 		//$("#productPriceComponentEditModalSubmitButton").attr("disabled", false);
 		//$('#productComponentModal').modal('hide');
 		alert("Failed adding user");

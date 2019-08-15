@@ -20,6 +20,6 @@ namespace Positiva_Task.Models
 		[Required(ErrorMessage = "Required")]
 		public string Password { get; set; }
 		[Required(ErrorMessage = "Required")]
-		public string DateOfBirth { get; set; }
+		public DateTime DateOfBirth { get; set; }
 	}
 }

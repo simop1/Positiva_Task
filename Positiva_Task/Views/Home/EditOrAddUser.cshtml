@@ -18,7 +18,7 @@
 		<span aria-hidden="true">&times;</span>
 	</button>
 </div>
-@using (Ajax.BeginForm("SaveUser", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSubmitSuccess", OnFailure = "OnSubmitFailure" }))
+@using (Ajax.BeginForm("SaveUser", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSubmitSuccess", OnFailure = "OnSubmitFailure" }, new { userID = -1}))
 {
 	@Html.AntiForgeryToken()
 	<div class="modal-body">
@@ -75,7 +75,16 @@
 			<div class="form-group col-md">
 				@Html.ValidationSummary(true)<br />
 				@Html.LabelFor(m => m.DateOfBirth) <br />
-				@Html.TextBoxFor(m => m.DateOfBirth)
+
+				<div class='input-group date' id='datetimepicker1'>
+					@Html.TextBoxFor(m => m.DateOfBirth)
+					@*<input type='text' class="form-control" />*@
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+
+
 				@Html.ValidationMessageFor(m => m.DateOfBirth)
 			</div>
 		</div>
@@ -85,4 +94,23 @@
 		<button id="btnModalSubmit" type="submit" class="btn btn-primary">Save</button>
 		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	</div>
+}
+
+
+@section scripts
+{
+	<script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
+	<script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
+	<script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
+	<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+	<script src="~/lib/jquery-validation- unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+	@Styles.Render("//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
+	@Scripts.Render("//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js")
+
+	<script type="text/javascript">
+		$(function () {
+			$('#datetimepicker1').datetimepicker();
+		});
+	</script>
 }
