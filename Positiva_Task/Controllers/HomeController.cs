@@ -10,9 +10,23 @@ using System.Text;
 
 namespace Positiva_Task.Controllers
 {
+    [RequireHttps]
     public class HomeController : Controller
     {
         private UsersContext db = new UsersContext();
+
+        [HttpGet]
+        public ActionResult ResetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ResetPassword(string email)
+        {
+            return Json(new { Message = "Reset link has been sent to email." });
+        }
+
         [HttpGet]
         public ActionResult Login()
         {

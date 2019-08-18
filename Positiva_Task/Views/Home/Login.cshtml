@@ -23,8 +23,8 @@
         </div>
     }
 
-    <span>Forgot password?</span>
-    <button id="btnResetPassword" type="submit" class="btn btn-primary">Reset password</button>
+@*<a style="cursor:pointer;" onclick="ResetPassword()">Forgot password?</a>*@
+    @Html.ActionLink("Forgot password?","ResetPassword","Home", null, new { @class = "page-scroll" })
     <br /><br />
     <span>Not registered?</span>
     <button id="btnRegister" type="submit" class="btn btn-primary">Register</button>
