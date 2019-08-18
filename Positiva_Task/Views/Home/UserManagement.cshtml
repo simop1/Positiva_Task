@@ -50,9 +50,6 @@
 					<td>
 						<a style="cursor:pointer;" id="edit_@item.UserID" onclick="EditUser(@item.UserID)">Edit</a> |
 						<a style="cursor:pointer;" id="delete_@item.UserID" onclick="DeleteUser(@item.UserID)">Delete</a> 
-
-						@*@Html.ActionLink("Edit", "EditOrAddUser", "Home", new { id = item.UserID }) |*@
-						@*@Html.ActionLink("Delete", "Delete", { id = item.UserID })*@
 					</td>
 				</tr>
 			}
@@ -116,7 +113,7 @@
 			contenttype: 'application/json; charset=utf-8',
 			url: '@Url.Action("EditOrAddUser", "Home")',
 			async: true,
-			data: { UserID: JSON.stringify(userID) },
+			data: { userID: JSON.stringify(userID) },
 			success: function (data) {
 				$('#createUserModal .modal-content').html(data);
 				$('#createUserModal').modal('show');
@@ -128,7 +125,6 @@
 	}
 
 	function DeleteUser(userID) {
-
 		var deleteUser = confirm("Are you sure you want to delete this user?");
 		if (deleteUser == true) {
 			$.ajax({
@@ -137,7 +133,7 @@
 				contenttype: 'application/json; charset=utf-8',
 				url: '@Url.Action("DeleteUser", "Home")',
 				async: true,
-				data: { UserID: JSON.stringify(userID) },
+				data: { userID: JSON.stringify(userID) },
 				success: function (data) {
 					$('#createUserModal .modal-content').html(data);
 					$('#createUserModal').modal('show');
@@ -161,9 +157,6 @@
 	}
 
 	function OnSubmitFailure(data) {
-		debugger
-		//$("#productPriceComponentEditModalSubmitButton").attr("disabled", false);
-		//$('#productComponentModal').modal('hide');
 		alert("Failed adding user");
 	}
 

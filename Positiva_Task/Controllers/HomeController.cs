@@ -80,14 +80,14 @@ namespace Positiva_Task.Controllers
         }
 
 		[HttpPost]
-		public ActionResult EditOrAddUser(int UserID)
+		public ActionResult EditOrAddUser(int userID)
 		{
 			UserModel model = new UserModel();
-			model.UserID = UserID;
+			model.UserID = userID;
 
-			if(UserID > 0)
+			if(userID > 0)
 			{
-				var userForEdit = db.Users.Find(UserID);
+				var userForEdit = db.Users.Find(userID);
 
 				model.UserID = userForEdit.UserID;
 				model.FirstName = userForEdit.FirstName;
