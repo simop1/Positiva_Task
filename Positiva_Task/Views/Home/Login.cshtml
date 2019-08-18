@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+
+<div class="row">
+    <h2>@ViewBag.Title</h2>
+</div>
+<br />
+<br />
+
+<div>
+    @using (Ajax.BeginForm("Login", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSubmitSuccess", OnFailure = "OnSubmitFailure" }, new { userID = -1 }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-row">
+            <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+            <br />
+            <input type="text" class="form-control" placeholder="Password" aria-label="Pasword" aria-describedby="basic-addon1">
+            <br />
+            <button id="btnLogin" type="submit" class="btn btn-primary">Login</button>
+            <br />
+        </div>
+    }
+
+    <span>Forgot password?</span>
+    <button id="btnResetPassword" type="submit" class="btn btn-primary">Reset password</button>
+    <br /><br />
+    <span>Not registered?</span>
+    <button id="btnRegister" type="submit" class="btn btn-primary">Register</button>
+</div>
+
+@section scripts
+{
+    <script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation- unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+    @Styles.Render("//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
+    @Scripts.Render("//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js")
+
+    <script type="text/javascript">
+
+        function OnSubmitSuccess(data) {
+		if (data.Error == true) {
+			alert("Invalid username or password.");
+		}
+		else {
+			alert("Logged in successfully.");
+		}
+	}
+
+	function OnSubmitFailure(data) {
+		alert("Login failed.");
+	}
+    </script>
+}

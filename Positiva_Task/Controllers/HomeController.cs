@@ -12,14 +12,35 @@ namespace Positiva_Task.Controllers
 
 
 
-	public class HomeController : Controller
+    public class HomeController : Controller
     {
-		private UsersContext db = new UsersContext();
+        private UsersContext db = new UsersContext();
+        [HttpGet]
+        public ActionResult Login()
+        {
+            LoginModel model = new LoginModel();
+            return View(model);
+        }
 
-		public ActionResult Index()
+        [HttpPost]
+        public ActionResult Login(LoginModel model)
+        {
+            if (model == null) return Json(new { Error = true });
+
+            var user = db.Users.FirstOrDefault(x => x.UserName == model.UserName || x.Email == model.UserName);
+            
+            if(user == null) return Json(new { Error = true });
+
+            var correctPassword = user.UserPassword == model.Password;
+
+            if(!correctPassword) return Json(new { Error = true });
+
+            return RedirectToAction("Index", "Home", user);
+        }
+
+        public ActionResult Index(User loggedUser)
 		{
-			var firstName = db.Users.FirstOrDefault().FirstName;
-			ViewBag.FirstName = firstName;
+			ViewBag.FirstName = loggedUser.FirstName;
 			return View();
         }
 
