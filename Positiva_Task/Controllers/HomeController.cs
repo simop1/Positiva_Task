@@ -7,6 +7,8 @@ using System.Web.Mvc;
 using Positiva_Task.DataAccess;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web.Security;
+using System.Net.Mail;
 
 namespace Positiva_Task.Controllers
 {
@@ -16,15 +18,79 @@ namespace Positiva_Task.Controllers
         private UsersContext db = new UsersContext();
 
         [HttpGet]
-        public ActionResult ResetPassword()
+        public ActionResult ForgotPassword()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult ResetPassword(string email)
+        public ActionResult ForgotPassword(string email)
         {
-            return Json(new { Message = "Reset link has been sent to email." });
+            var user = db.Users.FirstOrDefault(x => x.Email == email);
+            if(user == null)
+                return Json(new { Error = true, Message = "Email not registered." }, JsonRequestBehavior.AllowGet);
+
+            var link = "<a href='@Url.Action(\"ResetPassword\", \"Home\")' class='elements'>Click hear</a>";
+            var body = "<span>" + link + " to reset your password.</span>";
+            SendEmail(email, "Password reset", body);
+
+            return RedirectToAction("Login", "Home");
+        }
+
+        private void SendEmail(string email, string subject, string body)
+        {
+            SmtpClient client = new SmtpClient();
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.EnableSsl = true;
+            client.Host = "smtp.gmail.com";
+            client.Port = 587;
+
+            System.Net.NetworkCredential credentials = new System.Net.NetworkCredential("noreply@test.com", "password");
+            client.UseDefaultCredentials = false;
+            client.Credentials = credentials;
+
+            MailMessage msg = new MailMessage();
+            msg.From = new MailAddress("noreply@test.com");
+            msg.To.Add(new MailAddress(email));
+
+            msg.Subject = subject;
+            msg.IsBodyHtml = true;
+            msg.Body = body;
+
+            client.Send(msg);
+        }
+
+        [HttpGet]
+        public ActionResult ResetPassword()
+        {
+            ResetPasswordModel model = new ResetPasswordModel();
+            model.Email = "test";
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult ResetPassword(ResetPasswordModel model)
+        {
+            var user = db.Users.FirstOrDefault(x => x.Email == model.Email);
+            string hash = "";
+            using (MD5 md5Hash = MD5.Create())
+            {
+                hash = GetMd5Hash(md5Hash, model.Password);
+            }
+
+            user.UserPassword = hash;
+            db.SaveChanges();
+
+            return RedirectToAction("Login", "Home");
+            //return Json(new { Message = "Password has been changed." });
+        }
+
+        [HttpPost]
+        public ActionResult LogOut()
+        {
+            FormsAuthentication.SignOut();
+            Session.Abandon(); 
+            return RedirectToAction("Login", "Home");
         }
 
         [HttpGet]
@@ -60,6 +126,10 @@ namespace Positiva_Task.Controllers
             }
 
             if (!correctPassword) return Json(new { Error = true });
+
+            Session["UserName"] = user.UserName;
+            Session["Email"] = user.Email;
+            Session["Role"] = model.Role;
 
             return RedirectToAction("Index", "Home", user);
         }

@@ -6,10 +6,9 @@ using System.Web;
 
 namespace Positiva_Task.Models
 {
-	public class LoginModel
-	{
-		public string UserName { get; set; }
+	public class ResetPasswordModel
+    {
+		public string Email { get; set; }
 		public string Password { get; set; }
-		public string Role { get; set; }
     }
 }
