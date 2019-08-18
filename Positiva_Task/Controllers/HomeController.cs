@@ -142,28 +142,35 @@ namespace Positiva_Task.Controllers
 
         public ActionResult UserManagement()
         {
-			List<UserModel> model = new List<UserModel>();
-			var users = db.Users.ToList();
+            if (Session["Role"] != null && (int)Session["Role"] == (int)Enum.Role.Admin)
+            {
+                List<UserModel> model = new List<UserModel>();
+                var users = db.Users.ToList();
 
-			foreach (var user in users)
-			{
-				model.Add(new UserModel
-				{
-					UserID = user.UserID,
-					FirstName = user.FirstName,
-					LastName = user.LastName,
-					UserName = user.UserName,
-					Email = user.Email,
-					Password = user.UserPassword,
-					DateOfBirth = user.DateOfBirth
-				});
-			}
+			    foreach (var user in users)
+			    {
+				    model.Add(new UserModel
+				    {
+					    UserID = user.UserID,
+					    FirstName = user.FirstName,
+					    LastName = user.LastName,
+					    UserName = user.UserName,
+					    Email = user.Email,
+					    Password = user.UserPassword,
+					    DateOfBirth = user.DateOfBirth
+				    });
+			    }
 
-			ViewBag.Message = "User management";
-            return View(model);
+			    ViewBag.Message = "User management";
+                return View(model);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
-		[HttpPost]
+        [HttpPost]
 		public ActionResult EditOrAddUser(int userID)
 		{
 			UserModel model = new UserModel();

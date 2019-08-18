@@ -2,18 +2,15 @@
     ViewBag.Title = "Login";
 }
 
-<div class="row">
-    <h2>@ViewBag.Title</h2>
-</div>
-<br />
-<br />
-
 <div>
     @using (Ajax.BeginForm("Login", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSubmitSuccess", OnFailure = "OnSubmitFailure" }, new { userID = -1 }))
     {
         @Html.AntiForgeryToken()
 
         <div class="form-row">
+            <h2>@ViewBag.Title</h2>
+            <br /><br />
+
             <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
             <br />
             <input type="password" class="form-control" placeholder="Password" aria-label="Pasword" aria-describedby="basic-addon1">
@@ -23,7 +20,7 @@
         </div>
     }
 
-@*<a style="cursor:pointer;" onclick="ResetPassword()">Forgot password?</a>*@
+    <br />
     @Html.ActionLink("Forgot password?","ResetPassword","Home", null, new { @class = "page-scroll" })
     <br /><br />
     <span>Not registered?</span>

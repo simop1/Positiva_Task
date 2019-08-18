@@ -7,7 +7,7 @@ namespace Positiva_Task
 {
     public class Enum
     {
-        enum Role
+        public enum Role
         {
             Default = 0,
             Admin = 1,

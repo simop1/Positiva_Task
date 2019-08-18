@@ -23,12 +23,22 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("User management", "UserManagement", "Home")</li>
+                    <li>
+                    @if(Session["Role"] != null && (int)Session["Role"] == 1)
+                    {
+                        @Html.ActionLink("User management", "UserManagement", "Home")
+                    }
+                    else
+                    {
+                        <div class="tooltip">
+                          <span class="tooltiptext">User management</span>
+                        </div>
+                    }
+                    </li>
                 </ul>
             </div>
-            <div>
+            <div id="LogOutContainer">
                 <button id="btnLogout" type="button" class="btn btn-secondary">Log out</button>
-
             </div>
         </div>
     </div>
