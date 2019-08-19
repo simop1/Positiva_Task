@@ -8,8 +8,9 @@ namespace Positiva_Task.Models
 {
 	public class LoginModel
 	{
+		[Required(ErrorMessage = "Required")]
 		public string UserName { get; set; }
+		[Required(ErrorMessage = "Required")]
 		public string Password { get; set; }
-		public string Role { get; set; }
-    }
+	}
 }

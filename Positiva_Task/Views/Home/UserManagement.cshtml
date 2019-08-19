@@ -24,6 +24,7 @@
 				<td>User name</td>
 				<td>Email</td>
 				<td>Date of birth</td>
+				<td>Role</td>
 				<td>Action</td>
 			</tr>
 		</thead>
@@ -46,6 +47,9 @@
 					</td>
 					<td>
 						@Html.DisplayFor(model => item.DateOfBirth)
+					</td>
+					<td>
+						@Html.DisplayFor(model => item.Role)
 					</td>
 					<td>
 						<a style="cursor:pointer;" id="edit_@item.UserID" onclick="EditUser(@item.UserID)">Edit</a> |

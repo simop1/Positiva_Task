@@ -22,5 +22,6 @@ namespace Positiva_Task.Models
 		public string Password { get; set; }
 		[Required(ErrorMessage = "Required")]
 		public DateTime DateOfBirth { get; set; }
+		public int Role { get; set; }
 	}
 }

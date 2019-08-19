@@ -1,0 +1,23 @@
+﻿@{
+	ViewBag.Title = "Info for admins";
+}
+
+@if (ViewBag.isAdmin)
+{
+	<div class="row">
+		<h2>@ViewBag.Title</h2>
+	</div>
+	<br />
+	<br />
+	<div class="row">
+		<h4>Admin users rule!</h4>
+	</div>
+}
+else
+{
+	<br />
+	<br />
+	<div class="row">
+		<h2>This page is for admin users only.</h2>
+	</div>
+}

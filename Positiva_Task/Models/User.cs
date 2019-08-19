@@ -21,5 +21,6 @@ namespace Positiva_Task.Models
         public string Email { get; set; }
         public string UserPassword { get; set; }
         public System.DateTime DateOfBirth { get; set; }
+        public Nullable<int> Role { get; set; }
     }
 }

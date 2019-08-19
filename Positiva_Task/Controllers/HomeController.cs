@@ -103,11 +103,11 @@ namespace Positiva_Task.Controllers
         [HttpPost]
         public ActionResult Login(LoginModel model)
         {
-            if (model == null) return Json(new { Error = true });
+            if (model == null) return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
 
             var user = db.Users.FirstOrDefault(x => x.UserName == model.UserName || x.Email == model.UserName);
             
-            if(user == null) return Json(new { Error = true });
+            if(user == null) return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
 
             string inputHash = "";
             bool correctPassword;
@@ -129,18 +129,18 @@ namespace Positiva_Task.Controllers
 
             Session["UserName"] = user.UserName;
             Session["Email"] = user.Email;
-            Session["Role"] = model.Role;
+            Session["Role"] = user.Role.HasValue ? user.Role.Value : 0;
 
-            return RedirectToAction("Index", "Home", user);
+            return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult Index(User loggedUser)
+        public ActionResult Index()
 		{
-			ViewBag.FirstName = loggedUser.FirstName;
+			ViewBag.FirstName = Session["UserName"];
 			return View();
         }
 
-        public ActionResult UserManagement()
+		public ActionResult UserManagement()
         {
             if (Session["Role"] != null && (int)Session["Role"] == (int)Enum.Role.Admin)
             {
@@ -157,7 +157,8 @@ namespace Positiva_Task.Controllers
 					    UserName = user.UserName,
 					    Email = user.Email,
 					    Password = user.UserPassword,
-					    DateOfBirth = user.DateOfBirth
+					    DateOfBirth = user.DateOfBirth,
+						Role = user.Role.HasValue ? user.Role.Value : 0
 				    });
 			    }
 
@@ -186,6 +187,7 @@ namespace Positiva_Task.Controllers
 				model.UserName = userForEdit.UserName;
 				model.Email = userForEdit.Email;
 				model.DateOfBirth = userForEdit.DateOfBirth;
+				model.Role = userForEdit.Role.HasValue ? userForEdit.Role.Value : 0;
 
 				return PartialView("EditOrAddUser", model);
 			}
@@ -196,8 +198,8 @@ namespace Positiva_Task.Controllers
 		[HttpPost]
 		public ActionResult SaveUser(UserModel model, int userID)
 		{
-			if (ModelState.IsValid)
-			{
+			//if (ModelState.IsValid)
+			//{
 				if (model == null) return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
 
 				if (userID == -1)
@@ -216,14 +218,16 @@ namespace Positiva_Task.Controllers
 						UserName = model.UserName,
 						Email = model.Email,
 						UserPassword = hash,
-						DateOfBirth = model.DateOfBirth
+						DateOfBirth = model.DateOfBirth,
+						Role = model.Role
 					};
 
                     db.Users.Add(newUser);
 					db.SaveChanges();
-					return Json(new { Error = false }, JsonRequestBehavior.AllowGet);
-				}
+					return RedirectToAction("UserManagement", "Home");
+					//return Json(new { Error = false }, JsonRequestBehavior.AllowGet);
 			}
+			//}
 
 			return RedirectToAction("UserManagement", "Home");
 			//return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
@@ -272,12 +276,18 @@ namespace Positiva_Task.Controllers
 				if(user != null)
 				{
 					db.Users.Remove(user);
+					db.SaveChanges();
 				}
-
-				return RedirectToAction("UserManagement");
 			}
 
-			return RedirectToAction("UserManagement");
+			return RedirectToAction("UserManagement", "Home");
+		}
+
+		[HttpGet]
+		public ActionResult InfoForAdmins()
+		{
+			ViewBag.isAdmin = (int)Session["Role"] == 1; ;
+			return View();
 		}
 
 	}

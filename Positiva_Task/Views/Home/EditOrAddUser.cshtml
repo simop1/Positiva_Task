@@ -88,6 +88,15 @@
 				@Html.ValidationMessageFor(m => m.DateOfBirth)
 			</div>
 		</div>
+		<div class="form-row">
+			<div class="form-group col-md">
+				@Html.LabelFor(m => m.Role) <br />
+				@Html.RadioButtonFor(m => m.Role, "Normal user", new { id = 0 })
+				@Html.Label("Normal user")
+				@Html.RadioButtonFor(m => m.Role, "Admin", new { id = 1 })
+				@Html.Label("Admin")
+			</div>
+		</div>
 	</div>
 
 	<div class="modal-footer">
