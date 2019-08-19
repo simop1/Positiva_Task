@@ -130,15 +130,15 @@
 				success: function (data) {
 					debugger
 					if (data.Error == true) {
-						alert("Failed deleting user");
+						alert(data.Message);
 					}
 					else {
-						alert("User deleted");
+						alert(data.Message);
 						window.location.reload();
 					}
 				},
-				error: function () {
-					alert("Failed deleting user");
+				error: function (data) {
+					alert(data.Message);
 				}
 			});
 		}

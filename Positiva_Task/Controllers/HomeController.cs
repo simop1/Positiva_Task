@@ -210,7 +210,7 @@ namespace Positiva_Task.Controllers
                     hash = GetMd5Hash(md5Hash, model.Password);
                 }
 
-                if(hash == "") return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
+                if(hash == "") return Json(new { Error = true, Message = "Error in adding user" }, JsonRequestBehavior.AllowGet);
 
                 User newUser = new User() {
 					FirstName = model.FirstName,
@@ -224,20 +224,29 @@ namespace Positiva_Task.Controllers
 
                 db.Users.Add(newUser);
 				db.SaveChanges();
-				return Json(new { Error = false }, JsonRequestBehavior.AllowGet);
+				return Json(new { Error = false, Message = "User created" }, JsonRequestBehavior.AllowGet);
 			}
 			else
 			{
+				string hash = "";
+				using (MD5 md5Hash = MD5.Create())
+				{
+					hash = GetMd5Hash(md5Hash, model.Password);
+				}
+
+				if (hash == "") return Json(new { Error = true, Message = "Error in updating user data" }, JsonRequestBehavior.AllowGet);
+
 				var user = db.Users.Find(userID);
 				user.FirstName = model.FirstName;
 				user.LastName = model.LastName;
 				user.UserName = model.UserName;
 				user.Email = model.Email;
+				user.UserPassword = hash;
 				user.DateOfBirth = model.DateOfBirth;
 				user.Role = model.Role.HasValue ? model.Role.Value : 0;
+				db.SaveChanges();
+				return Json(new { Error = false, Message = "User data updated" }, JsonRequestBehavior.AllowGet);
 			}
-
-			return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
 		}
 
         static string GetMd5Hash(MD5 md5Hash, string input)
