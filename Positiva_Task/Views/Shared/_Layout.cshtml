@@ -11,8 +11,8 @@
 	<script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 					<span class="icon-bar"></span>
@@ -21,33 +21,35 @@
 				</button>
 				@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
 			</div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>
-                    @Html.ActionLink("User management", "UserManagement", "Home")
-                    @Html.ActionLink("Info for admins", "InfoForAdmins", "Home")
-                    </li>
-                </ul>
-            </div>
-            <div id="LogOutContainer">
-                <button id="btnLogout" type="button" class="btn btn-secondary">Log out</button>
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Simo Pöysä</p>
-        </footer>
-    </div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li>
+						@Html.ActionLink("User management", "UserManagement", "Home")
+						@Html.ActionLink("Info for admins", "InfoForAdmins", "Home")
+					</li>
+				</ul>
+			</div>
+			<div id="LogOutContainer">
+				<button id="btnLogout" type="button" class="btn btn-secondary">Log out</button>
+			</div>
+		</div>
+	</div>
+	<div class="container body-content">
+		@RenderBody()
+		<hr />
+		<footer>
+			<p>&copy; @DateTime.Now.Year - Simo Pöysä</p>
+		</footer>
+	</div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/jqueryval")
-    @RenderSection("scripts", required: false)
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@Scripts.Render("~/bundles/jqueryval")
+	@Styles.Render("//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
+	@Scripts.Render("//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js")
+	@RenderSection("scripts", required: false)
 
-    <script type="text/javascript">
+	<script type="text/javascript">
 		$("#btnLogout").on("click", function(e) {
 			$.ajax({
 				type: "POST",
@@ -61,7 +63,7 @@
 				}
 			});
 		});
-    </script>
+	</script>
 
 </body>
 </html>

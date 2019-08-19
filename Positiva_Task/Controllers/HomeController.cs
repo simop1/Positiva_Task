@@ -200,37 +200,44 @@ namespace Positiva_Task.Controllers
 		{
 			//if (ModelState.IsValid)
 			//{
-				if (model == null) return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
+			if (model == null) return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
 
-				if (userID == -1)
-				{
-                    string hash = "";
-                    using (MD5 md5Hash = MD5.Create())
-                    {
-                        hash = GetMd5Hash(md5Hash, model.Password);
-                    }
+			if (userID == -1)
+			{
+                string hash = "";
+                using (MD5 md5Hash = MD5.Create())
+                {
+                    hash = GetMd5Hash(md5Hash, model.Password);
+                }
 
-                    if(hash == "") return Json(new { Error = false }, JsonRequestBehavior.AllowGet);
+                if(hash == "") return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
 
-                    User newUser = new User() {
-						FirstName = model.FirstName,
-						LastName = model.LastName,
-						UserName = model.UserName,
-						Email = model.Email,
-						UserPassword = hash,
-						DateOfBirth = model.DateOfBirth,
-						Role = model.Role
-					};
+                User newUser = new User() {
+					FirstName = model.FirstName,
+					LastName = model.LastName,
+					UserName = model.UserName,
+					Email = model.Email,
+					UserPassword = hash,
+					DateOfBirth = model.DateOfBirth,
+					Role = model.Role
+				};
 
-                    db.Users.Add(newUser);
-					db.SaveChanges();
-					return RedirectToAction("UserManagement", "Home");
-					//return Json(new { Error = false }, JsonRequestBehavior.AllowGet);
+                db.Users.Add(newUser);
+				db.SaveChanges();
+				return Json(new { Error = false }, JsonRequestBehavior.AllowGet);
 			}
-			//}
+			else
+			{
+				var user = db.Users.Find(userID);
+				user.FirstName = model.FirstName;
+				user.LastName = model.LastName;
+				user.UserName = model.UserName;
+				user.Email = model.Email;
+				user.DateOfBirth = model.DateOfBirth;
+				user.Role = model.Role.HasValue ? model.Role.Value : 0;
+			}
 
-			return RedirectToAction("UserManagement", "Home");
-			//return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
+			return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
 		}
 
         static string GetMd5Hash(MD5 md5Hash, string input)
@@ -278,9 +285,13 @@ namespace Positiva_Task.Controllers
 					db.Users.Remove(user);
 					db.SaveChanges();
 				}
+				return Json(new { Error = false }, JsonRequestBehavior.AllowGet);
+			}
+			else
+			{
+				return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
 			}
 
-			return RedirectToAction("UserManagement", "Home");
 		}
 
 		[HttpGet]

@@ -7,7 +7,8 @@
 <div class="row">
 	<h2>@ViewBag.Title</h2>
 </div>
-<br /><br />
+<br />
+<br />
 <div class="row">
 	<button id="btnCreateUser" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createUserModal">
 		<span>Create new user</span>
@@ -53,7 +54,7 @@
 					</td>
 					<td>
 						<a style="cursor:pointer;" id="edit_@item.UserID" onclick="EditUser(@item.UserID)">Edit</a> |
-						<a style="cursor:pointer;" id="delete_@item.UserID" onclick="DeleteUser(@item.UserID)">Delete</a> 
+						<a style="cursor:pointer;" id="delete_@item.UserID" onclick="DeleteUser(@item.UserID)">Delete</a>
 					</td>
 				</tr>
 			}
@@ -71,14 +72,7 @@
 
 @section scripts
 {
-	<script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
-	<script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
-	<script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
-	<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-	<script src="~/lib/jquery-validation- unobtrusive/jquery.validate.unobtrusive.js"></script>
-
-	@Styles.Render("//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
-	@Scripts.Render("//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js")
+	@Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
 
 	<script type="text/javascript">
 		$(document).ready(function () {
@@ -90,15 +84,11 @@
 		var token = $('input[name="__RequestVerificationToken"]').val();
 
 		$("#btnCreateUser").on("click", function(e) {
-			//e.preventDefault();
 			$.ajax({
 				type: "POST",
 				datatype: "json",
 				contenttype: 'application/json; charset=utf-8',
 				url: '@Url.Action("EditOrAddUser", "Home")',
-				async: true,
-				//method: form.attr("method"),
-				//data: form.serialize(),
 				data: { UserID: -1 },
 				success: function (data) {
 					$('#createUserModal .modal-content').html(data);
@@ -116,7 +106,6 @@
 			datatype: "json",
 			contenttype: 'application/json; charset=utf-8',
 			url: '@Url.Action("EditOrAddUser", "Home")',
-			async: true,
 			data: { userID: JSON.stringify(userID) },
 			success: function (data) {
 				$('#createUserModal .modal-content').html(data);
@@ -139,23 +128,29 @@
 				async: true,
 				data: { userID: JSON.stringify(userID) },
 				success: function (data) {
-					$('#createUserModal .modal-content').html(data);
-					$('#createUserModal').modal('show');
+					debugger
+					if (data.Error == true) {
+						alert("Failed deleting user");
+					}
+					else {
+						alert("User deleted");
+						window.location.reload();
+					}
 				},
 				error: function () {
-					alert("Failed adding user");
+					alert("Failed deleting user");
 				}
 			});
 		}
 	}
-		
+
 	function OnSubmitSuccess(data) {
-		debugger
 		if (data.Error == true) {
 			$('#user-Error').show();
 		}
 		else {
 			$('#createUserModal').modal('hide');
+			alert("Added user successfully.")
 			window.location.reload();
 		}
 	}
