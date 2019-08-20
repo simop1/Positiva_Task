@@ -9,10 +9,14 @@
 	{
 		@Html.AntiForgeryToken()
 
-		<div class="form-row">
-			<h2>@ViewBag.Title</h2>
-			<br /><br />
+	<div class="row">
+		<h2>@ViewBag.Title</h2>
+		<br />
+		<span>You can login with your user name or email.</span>
+	</div>
 
+		<div class="form-row">
+			<br />
 			<div class="row">
 				@Html.ValidationSummary(true) <br />
 				@Html.LabelFor(m => m.UserName) <br />
@@ -26,21 +30,21 @@
 				@Html.TextBoxFor(m => m.Password)
 				@Html.ValidationMessageFor(m => m.Password)
 			</div>
-
-			@*<input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-				<br />
-				<input type="password" class="form-control" placeholder="Password" aria-label="Pasword" aria-describedby="basic-addon1">*@
-			<br />
-			<button id="btnLogin" type="submit" class="btn btn-primary">Login</button>
-			<br />
 		</div>
+		<br />
+
+		<div class="row">
+			<button id="btnLogin" type="submit" class="btn btn-primary">Login</button>
+		</div>
+		<br />
 	}
 
-	<br />
-	@Html.ActionLink("Forgot password?", "ResetPassword", "Home", null, new { @class = "page-scroll" })
-	<br /><br />
+	<div class="row">
+		@Html.ActionLink("Forgot password?", "ResetPassword", "Home", null, new { @class = "page-scroll" })
+	</div>
+	@*<br /><br />
 	<span>Not registered?</span>
-	<button id="btnRegister" type="submit" class="btn btn-primary">Register</button>
+	<button id="btnRegister" type="submit" class="btn btn-primary">Register</button>*@
 </div>
 
 @section scripts

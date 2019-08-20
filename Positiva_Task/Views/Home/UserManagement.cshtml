@@ -72,16 +72,17 @@
 
 @section scripts
 {
-	@Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+	<script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
 
 	<script type="text/javascript">
 		$(document).ready(function () {
-			$('#usersTable').DataTable({
-
-			});
+			$('#usersTable').DataTable({});
+			$('#datetimepicker').val("");
+			$('#datetimepicker').datepicker();
 		});
-
-		var token = $('input[name="__RequestVerificationToken"]').val();
 
 		$("#btnCreateUser").on("click", function(e) {
 			$.ajax({
@@ -128,7 +129,6 @@
 				async: true,
 				data: { userID: JSON.stringify(userID) },
 				success: function (data) {
-					debugger
 					if (data.Error == true) {
 						alert(data.Message);
 					}
@@ -144,9 +144,14 @@
 		}
 	}
 
+	function ValidateForm() {
+		debugger
+		return $('form').validate().form();
+	}
+
 	function OnSubmitSuccess(data) {
 		if (data.Error == true) {
-			$('#user-Error').show();
+			alert(data.Message);
 		}
 		else {
 			$('#createUserModal').modal('hide');

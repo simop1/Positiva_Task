@@ -52,7 +52,11 @@ textarea {
     visibility: visible;
 }
 
-#LogOutContainer {
-    float: right;
-    margin-top: -40px;
+.navbar-right {
+	margin-top: -40px;
+	margin-bottom: 10px;
+}
+
+.datepicker {
+	z-index: 1600 !important;
 }

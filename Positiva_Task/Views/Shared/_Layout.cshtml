@@ -7,33 +7,42 @@
 	@Styles.Render("~/Content/css")
 	@Scripts.Render("~/bundles/modernizr")
 	<script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
-	<script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
+	@*<script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>*@
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
 	<script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
 </head>
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-			</div>
-			<div class="navbar-collapse collapse">
-				<ul class="nav navbar-nav">
-					<li>
-						@Html.ActionLink("User management", "UserManagement", "Home")
-						@Html.ActionLink("Info for admins", "InfoForAdmins", "Home")
-					</li>
-				</ul>
-			</div>
-			<div id="LogOutContainer">
-				<button id="btnLogout" type="button" class="btn btn-secondary">Log out</button>
+	@if (Session["Role"] != null)
+	{
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li>
+							@Html.ActionLink("User management", "UserManagement", "Home")
+						</li>
+						<li>
+							@Html.ActionLink("Info for admins", "InfoForAdmins", "Home")
+						</li>
+					</ul>
+				</div>
+				@using (Html.BeginForm("LogOut", "Home", FormMethod.Post))
+				{
+					<div class="nav navbar-nav navbar-right">
+						<button id="btnLogout" type="submit" class="btn btn-secondary">Log out</button>
+					</div>
+				}
 			</div>
 		</div>
-	</div>
+	}
 	<div class="container body-content">
 		@RenderBody()
 		<hr />
@@ -45,25 +54,11 @@
 	@Scripts.Render("~/bundles/jquery")
 	@Scripts.Render("~/bundles/bootstrap")
 	@Scripts.Render("~/bundles/jqueryval")
+	<script src="~/Scripts/jquery.validation.js"></script>
+	<script src="~/Scripts/jquery.validation.unobtrusive.js"></script>
 	@Styles.Render("//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
 	@Scripts.Render("//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js")
 	@RenderSection("scripts", required: false)
-
-	<script type="text/javascript">
-		$("#btnLogout").on("click", function(e) {
-			$.ajax({
-				type: "POST",
-				datatype: "json",
-				contenttype: 'application/json; charset=utf-8',
-				url: '@Url.Action("LogOut", "Home")',
-				async: true,
-				success: function (data) {
-				},
-				error: function () {
-				}
-			});
-		});
-	</script>
 
 </body>
 </html>

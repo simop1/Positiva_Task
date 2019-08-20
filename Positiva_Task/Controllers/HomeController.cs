@@ -88,9 +88,9 @@ namespace Positiva_Task.Controllers
         [HttpPost]
         public ActionResult LogOut()
         {
-            FormsAuthentication.SignOut();
+            //FormsAuthentication.SignOut();
             Session.Abandon(); 
-            return RedirectToAction("Login", "Home");
+            return RedirectToAction("Login");
         }
 
         [HttpGet]
@@ -142,33 +142,26 @@ namespace Positiva_Task.Controllers
 
 		public ActionResult UserManagement()
         {
-            if (Session["Role"] != null && (int)Session["Role"] == (int)Enum.Role.Admin)
-            {
-                List<UserModel> model = new List<UserModel>();
-                var users = db.Users.ToList();
+            List<UserModel> model = new List<UserModel>();
+            var users = db.Users.ToList();
 
-			    foreach (var user in users)
-			    {
-				    model.Add(new UserModel
-				    {
-					    UserID = user.UserID,
-					    FirstName = user.FirstName,
-					    LastName = user.LastName,
-					    UserName = user.UserName,
-					    Email = user.Email,
-					    Password = user.UserPassword,
-					    DateOfBirth = user.DateOfBirth,
-						Role = user.Role.HasValue ? user.Role.Value : 0
-				    });
-			    }
+			foreach (var user in users)
+			{
+				model.Add(new UserModel
+				{
+					UserID = user.UserID,
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					UserName = user.UserName,
+					Email = user.Email,
+					Password = user.UserPassword,
+					DateOfBirth = user.DateOfBirth,
+					Role = user.Role.HasValue ? user.Role.Value : 0
+				});
+			}
 
-			    ViewBag.Message = "User management";
-                return View(model);
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+			ViewBag.Message = "User management";
+            return View(model);
         }
 
         [HttpPost]
@@ -198,21 +191,27 @@ namespace Positiva_Task.Controllers
 		[HttpPost]
 		public ActionResult SaveUser(UserModel model, int userID)
 		{
-			//if (ModelState.IsValid)
-			//{
 			if (model == null) return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
 
 			if (userID == -1)
 			{
-                string hash = "";
-                using (MD5 md5Hash = MD5.Create())
-                {
-                    hash = GetMd5Hash(md5Hash, model.Password);
-                }
+				string hash = "";
+				using (MD5 md5Hash = MD5.Create())
+				{
+					hash = GetMd5Hash(md5Hash, model.Password);
+				}
 
-                if(hash == "") return Json(new { Error = true, Message = "Error in adding user" }, JsonRequestBehavior.AllowGet);
+				if (hash == "") return Json(new { Error = true, Message = "Error in adding user" }, JsonRequestBehavior.AllowGet);
 
-                User newUser = new User() {
+				//check if username and email are in use
+				var userNameTaken = db.Users.FirstOrDefault(x => x.UserName == model.UserName) != null;
+				if (userNameTaken) return Json(new { Error = true, Message = "User name is taken" }, JsonRequestBehavior.AllowGet);
+
+				var emailTaken = db.Users.FirstOrDefault(x => x.Email == model.Email) != null;
+				if (emailTaken) return Json(new { Error = true, Message = "Email is in use" }, JsonRequestBehavior.AllowGet);
+
+				User newUser = new User()
+				{
 					FirstName = model.FirstName,
 					LastName = model.LastName,
 					UserName = model.UserName,
@@ -222,11 +221,11 @@ namespace Positiva_Task.Controllers
 					Role = model.Role
 				};
 
-                db.Users.Add(newUser);
+				db.Users.Add(newUser);
 				db.SaveChanges();
 				return Json(new { Error = false, Message = "User created" }, JsonRequestBehavior.AllowGet);
 			}
-			else
+			else if(userID > 0)
 			{
 				string hash = "";
 				using (MD5 md5Hash = MD5.Create())
@@ -247,6 +246,8 @@ namespace Positiva_Task.Controllers
 				db.SaveChanges();
 				return Json(new { Error = false, Message = "User data updated" }, JsonRequestBehavior.AllowGet);
 			}
+			else
+				return Json(new { Error = true, Message = "Error has happened" }, JsonRequestBehavior.AllowGet);
 		}
 
         static string GetMd5Hash(MD5 md5Hash, string input)
