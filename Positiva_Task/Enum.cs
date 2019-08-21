@@ -11,7 +11,7 @@ namespace Positiva_Task
         {
             Default = 0,
             Admin = 1,
-            NormalUser = 2
+            Editor = 2
         }
     }
 }

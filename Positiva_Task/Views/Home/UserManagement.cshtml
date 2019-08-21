@@ -33,6 +33,7 @@
 			@foreach (var item in Model)
 			{
 				@Html.HiddenFor(model => item.UserID)
+				@Html.HiddenFor(model => item.Role)
 				<tr>
 					<td>
 						@Html.DisplayFor(model => item.FirstName)
@@ -50,7 +51,7 @@
 						@Html.DisplayFor(model => item.DateOfBirth)
 					</td>
 					<td>
-						@Html.DisplayFor(model => item.Role)
+						@Html.DisplayFor(model => item.RoleName)
 					</td>
 					<td>
 						<a style="cursor:pointer;" id="edit_@item.UserID" onclick="EditUser(@item.UserID)">Edit</a> |
@@ -72,17 +73,22 @@
 
 @section scripts
 {
-	<script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
-	<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
-	<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
-	<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+
+
+	<script src="@Url.Content("/Scripts/jquery-3.4.1.js")" type="text/javascript"></script>
+	<script src="@Url.Content("/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
+	<script src="@Url.Content("/Scripts/jquery.validate.js")" type="text/javascript"></script>
+	<script src="@Url.Content("/Scripts/jquery-ui-1.12.1.js")" type="text/javascript"></script>
+	@Styles.Render("//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
+	@Scripts.Render("//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js")
+	@Scripts.Render("/Scripts/jquery-ui-1.12.1.js")
 
 	<script type="text/javascript">
 		$(document).ready(function () {
 			$('#usersTable').DataTable({});
-			$('#datetimepicker').val("");
-			$('#datetimepicker').datepicker();
 		});
+
+		$("#datetimepicker").datepicker();
 
 		$("#btnCreateUser").on("click", function(e) {
 			$.ajax({
@@ -145,7 +151,6 @@
 	}
 
 	function ValidateForm() {
-		debugger
 		return $('form').validate().form();
 	}
 

@@ -103,11 +103,11 @@ namespace Positiva_Task.Controllers
         [HttpPost]
         public ActionResult Login(LoginModel model)
         {
-            if (model == null) return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
+            if (model == null) return Json(new { Error = true, Message = "Fill the login info." }, JsonRequestBehavior.AllowGet);
 
             var user = db.Users.FirstOrDefault(x => x.UserName == model.UserName || x.Email == model.UserName);
             
-            if(user == null) return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
+            if(user == null) return Json(new { Error = true, Message = "Incorrect username or password." }, JsonRequestBehavior.AllowGet);
 
             string inputHash = "";
             bool correctPassword;
@@ -125,7 +125,7 @@ namespace Positiva_Task.Controllers
                 }
             }
 
-            if (!correctPassword) return Json(new { Error = true });
+            if (!correctPassword) return Json(new { Error = true, Message = "Incorrect username or password." });
 
             Session["UserName"] = user.UserName;
             Session["Email"] = user.Email;
@@ -156,7 +156,8 @@ namespace Positiva_Task.Controllers
 					Email = user.Email,
 					Password = user.UserPassword,
 					DateOfBirth = user.DateOfBirth,
-					Role = user.Role.HasValue ? user.Role.Value : 0
+					Role = user.Role.HasValue ? user.Role.Value : 0,
+					RoleName = user.Role.HasValue ? user.Role.Value == (int)Enum.Role.Admin ? "Admin" : "Editor" : "" 
 				});
 			}
 
@@ -195,9 +196,15 @@ namespace Positiva_Task.Controllers
 
 			if (userID == -1)
 			{
+				if(string.IsNullOrWhiteSpace(model.FirstName) || string.IsNullOrWhiteSpace(model.LastName) || string.IsNullOrWhiteSpace(model.UserName) || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
+					return Json(new { Error = true, Message = "All input fields must be filled." }, JsonRequestBehavior.AllowGet);
+
+
+
 				string hash = "";
 				using (MD5 md5Hash = MD5.Create())
 				{
+	
 					hash = GetMd5Hash(md5Hash, model.Password);
 				}
 
@@ -295,11 +302,11 @@ namespace Positiva_Task.Controllers
 					db.Users.Remove(user);
 					db.SaveChanges();
 				}
-				return Json(new { Error = false }, JsonRequestBehavior.AllowGet);
+				return Json(new { Error = false, Message = "User deleted." }, JsonRequestBehavior.AllowGet);
 			}
 			else
 			{
-				return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
+				return Json(new { Error = true, Message = "Error deleting user." }, JsonRequestBehavior.AllowGet);
 			}
 
 		}

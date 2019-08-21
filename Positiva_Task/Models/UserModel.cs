@@ -23,5 +23,6 @@ namespace Positiva_Task.Models
 		[Required(ErrorMessage = "Required")]
 		public DateTime DateOfBirth { get; set; }
 		public int? Role { get; set; }
+		public string RoleName { get; set; }
 	}
 }
