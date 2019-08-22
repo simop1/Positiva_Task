@@ -73,22 +73,16 @@
 
 @section scripts
 {
-
-
-	<script src="@Url.Content("/Scripts/jquery-3.4.1.js")" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
 	<script src="@Url.Content("/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
 	<script src="@Url.Content("/Scripts/jquery.validate.js")" type="text/javascript"></script>
-	<script src="@Url.Content("/Scripts/jquery-ui-1.12.1.js")" type="text/javascript"></script>
 	@Styles.Render("//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
 	@Scripts.Render("//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js")
-	@Scripts.Render("/Scripts/jquery-ui-1.12.1.js")
 
 	<script type="text/javascript">
 		$(document).ready(function () {
 			$('#usersTable').DataTable({});
 		});
-
-		$("#datetimepicker").datepicker();
 
 		$("#btnCreateUser").on("click", function(e) {
 			$.ajax({

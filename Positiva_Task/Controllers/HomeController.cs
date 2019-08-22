@@ -30,7 +30,7 @@ namespace Positiva_Task.Controllers
             if(user == null)
                 return Json(new { Error = true, Message = "Email not registered." }, JsonRequestBehavior.AllowGet);
 
-            var link = "<a href='@Url.Action(\"ResetPassword\", \"Home\")' class='elements'>Click hear</a>";
+            var link = "<a href='@Url.Action(\"ResetPassword\", \"Home\")?id=" + user.UserID + "' class='elements'>Click hear</a>";
             var body = "<span>" + link + " to reset your password.</span>";
             SendEmail(email, "Password reset", body);
 
